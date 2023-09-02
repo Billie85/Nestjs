@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../database/prisma.service");
+const bcryptjs = require("bcryptjs");
 let UsersService = class UsersService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -19,8 +20,9 @@ let UsersService = class UsersService {
     async create(user) {
         const newUser = await this.prisma.user.create({
             data: {
-                email: user.email,
-                name: user.username
+                id: user.id,
+                username: user.username,
+                password: await bcryptjs.hash(user.password, 12)
             },
         });
         return newUser;
@@ -29,14 +31,14 @@ let UsersService = class UsersService {
         const users = await this.prisma.user.findMany();
         return users;
     }
-    async find(username) {
-        const user = await this.prisma.user.findFirst({
+    findOne(username) {
+        const user = this.prisma.user.findFirst({
             where: {
-                username,
+                username
             }
         });
         if (!user) {
-            throw new common_1.NotFoundException(`User with username '${username}' not found`);
+            throw new common_1.NotFoundException(`not found user :(`);
         }
         return user;
     }

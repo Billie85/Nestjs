@@ -16,6 +16,8 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const users_service_1 = require("./users.service");
+const passport_1 = require("@nestjs/passport");
+const common_2 = require("@nestjs/common");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -23,8 +25,8 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
-    async find(username) {
-        return this.usersService.find(username);
+    findOne(username, req) {
+        return req.user;
     }
     create(createUsers) {
         return this.usersService.create(createUsers);
@@ -39,11 +41,13 @@ __decorate([
 ], UsersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':username'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     __param(0, (0, common_1.Param)('username')),
+    __param(1, (0, common_2.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "find", null);
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

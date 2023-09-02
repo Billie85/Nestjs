@@ -5,17 +5,17 @@ export declare class UsersService {
     constructor(prisma: PrismaService);
     create(user: CreateUserDto): Promise<{
         id: number;
-        email: string;
-        name: string;
+        username: string;
+        password: string;
     }>;
     findAll(): Promise<{
         id: number;
-        email: string;
-        name: string;
+        username: string;
+        password: string;
     }[]>;
-    find(username: string): Promise<{
+    findOne(username: string): import(".prisma/client").Prisma.Prisma__UserClient<{
         id: number;
-        email: string;
-        name: string;
-    }>;
+        username: string;
+        password: string;
+    }, null, import("@prisma/client/runtime/library").DefaultArgs>;
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto'
 import { PrismaService } from 'src/database/prisma.service';
-
+import *  as bcryptjs from "bcryptjs";
 @Injectable()
 export class UsersService {
 	//users: CreateUserDto[] = [];//値を宣言初期化してる。この場合は配列
@@ -13,15 +13,14 @@ constructor(private readonly prisma: PrismaService) {}
 async create(user: CreateUserDto) {
 		const newUser = await this.prisma.user.create({
 			data: {
-				email: user.email,
-				name: user.username
+				id: user.id,
+				username: user.username,
+				password: await bcryptjs.hash(user.password, 12)
 			},
 		});
 		return newUser;
 	}
 
-// すべてのユーザーを取得するメソッド
-//return this.users;元のコード
 async findAll() {
 		const users = await this.prisma.user.findMany();
 		return users;
@@ -33,8 +32,9 @@ findOne(username: string) {
 					username
         }
     });
+	
     if (!user) {
-        throw new NotFoundException(`User with username '${username}' not found`);
+        throw new NotFoundException(`not found user :(`);
     }
     return user;
 	}
